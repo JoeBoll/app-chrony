@@ -1,7 +1,7 @@
 #!/command/with-contenv bashio
 # shellcheck shell=bash
 # ==============================================================================
-# Home Assistant Community App: chrony
+# Chrony (NTP peering) - fork of the Home Assistant Community App: chrony
 # Runs chrony daemon
 # ==============================================================================
 declare -a options

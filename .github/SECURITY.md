@@ -16,17 +16,14 @@ app. Users are strongly encouraged to keep their installations up to date.
 
 ## Reporting a Vulnerability
 
-**Please do not report security vulnerabilities through public GitHub issues,
-discussions, or pull requests.**
+Report vulnerabilities in this fork by opening an issue at
+<https://github.com/JoeBoll/app-chrony/issues>. Do not post exploit details
+publicly: open the issue with a short summary and ask for a private channel,
+and the maintainer (Joe Boll) will follow up.
 
-Instead, report them privately through GitHub's private vulnerability
-reporting:
-
-[**Report a vulnerability**](https://github.com/hassio-addons/app-chrony/security/advisories/new)
-
-If for any reason you are unable to use GitHub's private vulnerability
-reporting, you may also reach out to the maintainer by email at
-[opensource@frenck.dev](mailto:opensource@frenck.dev).
+Vulnerabilities that also affect the original add-on should be reported to
+upstream (<https://github.com/hassio-addons/app-chrony>) following their
+security policy.
 
 When reporting, please include as much of the following as possible:
 
@@ -37,13 +34,8 @@ When reporting, please include as much of the following as possible:
 
 ## Disclosure Timeline
 
-- **Acknowledgement:** you will receive an acknowledgement of your report
-  within **48 hours**.
-- **Initial assessment:** a triage and initial severity assessment will be
-  shared within **7 days** of the acknowledgement.
-- **Fix and disclosure:** valid reports are targeted for resolution and
-  coordinated public disclosure within **90 days** of the initial report,
-  depending on complexity and impact.
+This is a personal fork maintained on a best-effort basis; there is no
+guaranteed response time.
 
 You will be kept informed throughout the process and credited in the release
 notes for the fix, unless you prefer to remain anonymous.
@@ -64,5 +56,6 @@ The following are **not** considered security vulnerabilities in this project:
 
 ## Scope
 
-This security policy covers the chrony app published by Home Assistant
-Community Apps and its source code in this repository.
+This security policy covers the Chrony (NTP peering) add-on published from
+https://github.com/JoeBoll/app-chrony (a fork of the Home Assistant
+Community Apps chrony add-on) and its source code in this repository.

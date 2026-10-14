@@ -1,5 +1,10 @@
 # Contributing
 
+This is Joe Boll's fork of the Home Assistant Community Apps chrony add-on
+(upstream: <https://github.com/hassio-addons/app-chrony>, by Paul Sinclair).
+Issues and pull requests for the peering fork belong here; changes that are
+not fork-specific may be better sent upstream.
+
 When contributing to this repository, please first discuss the change you wish
 to make via issue, email, or any other method with the owners of this repository
 before making a change.
@@ -21,9 +26,7 @@ Even better: You could submit a pull request with a fix / new feature!
 1. Search our repository for open or closed [pull requests][prs] that relates
    to your submission. You don't want to duplicate effort.
 
-1. You may merge the pull request in once you have the sign-off of two other
-   developers, or if you do not have permission to do that, you may request
-   the second reviewer to merge it for you.
+1. Pull requests are reviewed and merged by the repository owner, Joe Boll.
 
-[github]: https://github.com/hassio-addons/app-chrony/issues
-[prs]: https://github.com/hassio-addons/app-chrony/pulls
+[github]: https://github.com/JoeBoll/app-chrony/issues
+[prs]: https://github.com/JoeBoll/app-chrony/pulls

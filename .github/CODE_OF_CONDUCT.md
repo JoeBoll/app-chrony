@@ -72,7 +72,9 @@ and this Code of Conduct reinforces encouraged behaviors and norms that can
 help avoid conflicts and minimize harm.
 
 When an incident does occur, it is important to report it promptly. To report
-a possible violation, send an email to `opensource@frenck.dev`.
+a possible violation, open an issue at
+<https://github.com/JoeBoll/app-chrony/issues> (this project has no private
+reporting address; keep personal details out of public issues).
 
 Community Moderators take reports of violations seriously and will make every
 effort to respond in a timely manner. They will investigate all reports of code

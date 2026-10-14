@@ -61,13 +61,13 @@ LABEL \
     io.hass.arch="${BUILD_ARCH}" \
     io.hass.type="addon" \
     io.hass.version=${BUILD_VERSION} \
-    maintainer="Paul Sinclair <hello@addons.community>" \
+    maintainer="Joe Boll" \
     org.opencontainers.image.title="${BUILD_NAME}" \
     org.opencontainers.image.description="${BUILD_DESCRIPTION}" \
-    org.opencontainers.image.vendor="Home Assistant Community Apps" \
-    org.opencontainers.image.authors="Paul Sinclair <hello@addons.community>" \
+    org.opencontainers.image.vendor="Joe Boll (fork of Home Assistant Community Apps chrony)" \
+    org.opencontainers.image.authors="Joe Boll; original add-on by Paul Sinclair" \
     org.opencontainers.image.licenses="MIT" \
-    org.opencontainers.image.url="https://frenck.dev/home-assistant-apps" \
+    org.opencontainers.image.url="https://github.com/JoeBoll/app-chrony" \
     org.opencontainers.image.source="https://github.com/${BUILD_REPOSITORY}" \
     org.opencontainers.image.documentation="https://github.com/${BUILD_REPOSITORY}/blob/main/README.md" \
     org.opencontainers.image.created=${BUILD_DATE} \
