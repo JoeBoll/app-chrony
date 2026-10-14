@@ -1,6 +1,6 @@
 ---
 name: Chrony (NTP peering)
-version: 6.1.0-peering.1
+version: 6.1.0-peering.2
 slug: chrony_peering
 description: >-
   chrony NTP server/client with symmetric peering, authentication keys,
@@ -53,6 +53,7 @@ schema:
       xleave: bool?
       minpoll: int(-7,24)?
       maxpoll: int(-7,24)?
+      filter: int(1,)?
       iburst: bool?
       prefer: bool?
   servers:
@@ -61,6 +62,7 @@ schema:
       xleave: bool?
       minpoll: int(-7,24)?
       maxpoll: int(-7,24)?
+      filter: int(1,)?
       iburst: bool?
       prefer: bool?
   allow:

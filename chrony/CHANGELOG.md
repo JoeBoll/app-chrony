@@ -1,5 +1,12 @@
 # Changelog
 
+## 6.1.0-peering.2
+
+- Add per-peer/server `filter` option (`filter N`).
+- Validate minpoll/maxpoll range (-7..24, negative = sub-second polling)
+  and that minpoll <= maxpoll.
+- Docs example peer now uses `minpoll -6 maxpoll -6 xleave filter 7 key 1`.
+
 ## 6.1.0-peering.1
 
 Fork of [hassio-addons/app-chrony](https://github.com/hassio-addons/app-chrony)

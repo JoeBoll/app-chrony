@@ -48,6 +48,9 @@ peers:
   - address: 192.0.2.10
     key: 1
     xleave: true
+    minpoll: -6
+    maxpoll: -6
+    filter: 7
 allow:
   - 192.0.2.0/24
 keys:
@@ -98,13 +101,20 @@ Symmetric NTP peers. Each entry renders
 | `address` | str | IP or hostname |
 | `key` | int | key id from `keys`; both sides must use the same id and secret |
 | `xleave` | bool | interleaved mode; must be enabled on both peers |
-| `minpoll` / `maxpoll` | int | overrides the defaults |
+| `minpoll` / `maxpoll` | int | overrides the defaults; -7 to 24 (power of two seconds, so -6 = 64 polls per second) |
+| `filter` | int | median filter over N polls (`filter N`); useful with sub-second polling |
 | `iburst` | bool | **ignored with a warning**: chrony does not support `iburst` (or `burst`, `nts`, `presend`, `copy`) on `peer` lines |
 | `prefer` | bool | prefer this source |
 
 chrony's own docs note that symmetric mode is weaker than client/server
 mode, and that unauthenticated peers can be disrupted by spoofed packets.
-Always use a `key` for peers. If you only need both hosts to be able to
+Always use a `key` for peers.
+
+Sub-second polling (negative minpoll/maxpoll) is meant for a wired LAN:
+chrony only enables it when the source is reachable and the round-trip
+delay is under 10 ms; otherwise it polls at 1 s. Both peers should use the
+same poll interval. Combine it with `filter` (e.g. `filter 7`) to merge
+the many samples into one per update. If you only need both hosts to be able to
 sync from each other, two `server` lines (one on each host) is the
 alternative chrony recommends.
 
@@ -160,7 +170,7 @@ On each host this add-on peers with (Debian `chrony`):
    `keyfile /etc/chrony/chrony.keys` is in `/etc/chrony/chrony.conf`
    (Debian ships it).
 1. Add a matching peer line, e.g.
-   `peer <pi address> key 1 xleave minpoll 4 maxpoll 6`.
+   `peer <pi address> key 1 xleave minpoll -6 maxpoll -6 filter 7`.
 1. Add `allow <pi address>` (or its subnet).
 1. Open UDP 123 between the hosts (Proxmox firewall at datacenter/node
    level if enabled, plus any LAN firewall).

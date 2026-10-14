@@ -19,4 +19,11 @@ if "${render}" "${tmp}/bad.json" "${tmp}/b.conf" "${tmp}/b.keys" 2>/dev/null; th
   echo "FAIL: bad address accepted"; fail=1
 elif [[ -e "${tmp}/b.conf" ]]; then echo "FAIL: partial conf left"; fail=1
 else echo "ok   rejects bad address"; fi
+if grep -qx 'peer 192.0.2.10 key 1 xleave minpoll -6 maxpoll -6 filter 7' "${tmp}/options-subsecond-peer.conf"; then
+  echo "ok   sub-second peer line"; else echo "FAIL sub-second peer line"; fail=1; fi
+for bad in '{"minpoll":-8}' '{"minpoll":2,"maxpoll":1}' '{"filter":0}'; do
+  jq -n --argjson b "${bad}" '{mode:"none",peers:[{address:"192.0.2.1"}+$b]}' > "${tmp}/bad2.json"
+  if "${render}" "${tmp}/bad2.json" "${tmp}/c.conf" "${tmp}/c.keys" 2>/dev/null; then
+    echo "FAIL accepted ${bad}"; fail=1; else echo "ok   rejects ${bad}"; fi
+done
 exit "${fail}"

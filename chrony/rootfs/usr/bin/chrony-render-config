@@ -34,8 +34,20 @@ render_source() {
   [[ "$(jq -r '.xleave // false' <<<"${json}")" == "true" ]] && line+=" xleave"
   minpoll=$(jq -r --arg d "$(opt .default_minpoll)" '.minpoll // ($d|select(.!=""))  // empty' <<<"${json}")
   maxpoll=$(jq -r --arg d "$(opt .default_maxpoll)" '.maxpoll // ($d|select(.!="")) // empty' <<<"${json}")
+  for v in "${minpoll}" "${maxpoll}"; do
+    [[ -z "${v}" || ( "${v}" =~ ^-?[0-9]+$ && "${v}" -ge -7 && "${v}" -le 24 ) ]] \
+      || die "${directive} ${addr}: poll value ${v} out of range (-7..24)"
+  done
+  if [[ -n "${minpoll}" && -n "${maxpoll}" && "${minpoll}" -gt "${maxpoll}" ]]; then
+    die "${directive} ${addr}: minpoll ${minpoll} is greater than maxpoll ${maxpoll}"
+  fi
   [[ -n "${minpoll}" ]] && line+=" minpoll ${minpoll}"
   [[ -n "${maxpoll}" ]] && line+=" maxpoll ${maxpoll}"
+  filter=$(jq -r '.filter // empty' <<<"${json}")
+  if [[ -n "${filter}" ]]; then
+    [[ "${filter}" =~ ^[0-9]+$ && "${filter}" -ge 1 ]] || die "${directive} ${addr}: filter must be a positive integer"
+    line+=" filter ${filter}"
+  fi
   if [[ "$(jq -r '.iburst // false' <<<"${json}")" == "true" ]]; then
     if [[ "${directive}" == "peer" ]]; then
       warn "peer ${addr}: chrony does not support iburst on peer lines; ignoring it"
