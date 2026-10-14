@@ -35,6 +35,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN \
     apk add --no-cache \
         chrony=4.8-r7 \
+        gpsd=3.27.3-r1 \
         libcap \
         nettle
 

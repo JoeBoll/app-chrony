@@ -1,0 +1,32 @@
+#!/command/with-contenv bashio
+# shellcheck shell=bash
+# ==============================================================================
+# chrony (NTP peering) fork: runs gpsd for the GPS NMEA refclock.
+# Idles when gps is disabled or no serial device is set.
+# ==============================================================================
+if ! bashio::config.true 'gps.enabled' \
+    || bashio::config.is_empty 'gps.serial_device';
+then
+    exec sleep infinity
+fi
+
+serial=$(bashio::config 'gps.serial_device')
+declare -a options=(-N -n -b)
+if bashio::config.has_value 'gps.baud'; then
+    options+=(-s "$(bashio::config 'gps.baud')")
+fi
+if bashio::debug; then
+    options+=(-D 2)
+fi
+
+# SOCK mode: chronyd must create its socket before gpsd starts.
+if bashio::config.equals 'gps.nmea_source' 'sock'; then
+    sock="/run/chrony.clk.$(basename "${serial}").sock"
+    for _ in $(seq 1 30); do
+        [[ -S "${sock}" ]] && break
+        sleep 1
+    done
+fi
+
+bashio::log.info "Starting gpsd on ${serial}..."
+exec gpsd "${options[@]}" "${serial}"

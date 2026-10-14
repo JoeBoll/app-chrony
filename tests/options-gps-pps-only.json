@@ -1,0 +1,1 @@
+{"mode":"none","makestep_threshold":0.1,"makestep_limit":-1,"peers":[{"address":"192.0.2.10","key":1,"xleave":true,"minpoll":-6,"maxpoll":-6,"filter":7}],"keys":[{"id":1,"type":"SHA256","secret":"HEX:00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff"}],"gps":{"enabled":true,"pps_device":"/dev/pps0","pps_offset":-0.000001,"pps_prefer":false}}

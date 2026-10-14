@@ -91,6 +91,45 @@ legacy_iburst=" iburst"
     [[ -n "${j}" ]] && render_source peer "${j}"
   done < <(jq -c '.peers[]?' "${OPTIONS}")
 
+  if [[ "$(opt .gps.enabled)" == "true" ]]; then
+    echo
+    echo "# GPS (gpsd for NMEA, kernel PPS)"
+    serial=$(opt .gps.serial_device)
+    pps=$(opt .gps.pps_device)
+    nmea_src=$(opt .gps.nmea_source); nmea_src="${nmea_src:-shm}"
+    nmea_off=$(opt .gps.nmea_offset); nmea_off="${nmea_off:-0.2}"
+    nmea_del=$(opt .gps.nmea_delay); nmea_del="${nmea_del:-0.2}"
+    pps_off=$(opt .gps.pps_offset)
+    pps_prefer=$(jq -r 'if .gps.pps_prefer == false then "false" else "true" end' "${OPTIONS}")
+    for v in "${nmea_off}" "${nmea_del}" "${pps_off}"; do
+      [[ -z "${v}" || "${v}" =~ ^-?[0-9]*\.?[0-9]+([eE]-?[0-9]+)?$ ]] || die "gps: invalid number ${v}"
+    done
+    if [[ -n "${pps}" && ! -e "${pps}" && -z "${CHRONY_RENDER_SKIP_DEVICE_CHECK:-}" ]]; then
+      warn "gps: PPS device ${pps} does not exist; PPS refclock skipped"
+      pps=""
+    fi
+    [[ -n "${serial}" || -n "${pps}" ]] || warn "gps: enabled but no serial_device or pps_device set; nothing to add"
+    nmea_select=""
+    [[ -n "${pps}" ]] && nmea_select=" noselect"
+    if [[ -n "${serial}" ]]; then
+      if [[ "${nmea_src}" == "sock" ]]; then
+        echo "refclock SOCK /run/chrony.clk.$(basename "${serial}").sock refid NMEA${nmea_select} offset ${nmea_off} delay ${nmea_del}"
+      else
+        # perm=0666: gpsd drops root after opening the serial port; the SHM
+        # segment lives in this container's private IPC namespace.
+        echo "refclock SHM 0:perm=0666 refid NMEA${nmea_select} offset ${nmea_off} delay ${nmea_del}"
+      fi
+    fi
+    if [[ -n "${pps}" ]]; then
+      line="refclock PPS ${pps}"
+      [[ -n "${serial}" ]] && line+=" lock NMEA"
+      line+=" refid PPS"
+      [[ -n "${pps_off}" ]] && line+=" offset ${pps_off}"
+      [[ "${pps_prefer}" == "true" ]] && line+=" prefer"
+      echo "${line}"
+    fi
+  fi
+
   echo
   echo "# Reference clocks"
   while IFS= read -r r; do
@@ -108,6 +147,16 @@ legacy_iburst=" iburst"
       [[ "${a}" =~ ^[A-Za-z0-9./:-]+$ ]] || die "invalid allow entry: ${a}"
       echo "allow ${a}"
     done < <(jq -r '.allow[]?' "${OPTIONS}")
+  fi
+
+  echo
+  echo "# Performance"
+  [[ "$(opt .hwtimestamp)" == "true" ]] && echo "hwtimestamp *"
+  [[ "$(opt .lock_all)" == "true" ]] && echo "lock_all"
+  prio=$(opt .sched_priority)
+  if [[ -n "${prio}" && "${prio}" != "0" ]]; then
+    [[ "${prio}" =~ ^[0-9]+$ && "${prio}" -le 99 ]] || die "sched_priority must be 0-99"
+    echo "sched_priority ${prio}"
   fi
 
   if [[ "$(opt .local_stratum)" != "" ]]; then

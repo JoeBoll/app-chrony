@@ -1,6 +1,6 @@
 ---
 name: Chrony (NTP peering)
-version: 6.1.0-peering.2
+version: 6.1.0-peering.3
 slug: chrony_peering
 description: >-
   chrony NTP server/client with symmetric peering, authentication keys,
@@ -13,14 +13,18 @@ arch:
 hassio_api: true
 init: false
 host_network: true
+# SYS_NICE: sched_priority. IPC_LOCK + SYS_RESOURCE: lock_all (chronyd
+# raises RLIMIT_MEMLOCK before mlockall). realtime adds the rtprio
+# and memlock ulimits. uart grants access to serial ports for gpsd.
+# The PPS device is granted through the gps.pps_device option (device type),
+# so nothing breaks when no GPS hat is fitted. No static devices: list.
 privileged:
   - SYS_TIME
-# Future GPS/PPS: HA refuses to start an add-on whose mapped device is
-# missing, so /dev/pps0 is NOT mapped by default. See DOCS.md
-# ("GPS / PPS reference clock") for how to enable it.
-# devices:
-#   - /dev/pps0
-#   - /dev/ttyAMA0
+  - SYS_NICE
+  - IPC_LOCK
+  - SYS_RESOURCE
+realtime: true
+uart: true
 options:
   set_system_clock: true
   mode: pool
@@ -35,6 +39,15 @@ options:
   allow: []
   keys: []
   refclocks: []
+  hwtimestamp: false
+  lock_all: false
+  sched_priority: 1
+  gps:
+    enabled: false
+    nmea_source: shm
+    nmea_offset: 0.2
+    nmea_delay: 0.2
+    pps_prefer: true
   extra_config: ""
 schema:
   log_level: list(trace|debug|info|notice|warning|error|fatal)?
@@ -74,4 +87,17 @@ schema:
   refclocks:
     - str
   local_stratum: int(1,15)?
+  hwtimestamp: bool
+  lock_all: bool
+  sched_priority: int(0,99)
+  gps:
+    enabled: bool
+    serial_device: device(subsystem=tty)?
+    pps_device: device?
+    baud: int(1200,921600)?
+    nmea_source: list(shm|sock)
+    nmea_offset: float
+    nmea_delay: float
+    pps_offset: float?
+    pps_prefer: bool
   extra_config: text?

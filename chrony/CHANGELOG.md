@@ -1,5 +1,17 @@
 # Changelog
 
+## 6.1.0-peering.3
+
+- Add a structured `gps` option: gpsd 3.27 bundled and started by s6 only
+  when enabled; NMEA via SHM 0 or SOCK, PPS refclock locked to NMEA and
+  preferred; offsets/delays tunable; missing PPS device is skipped with a
+  warning.
+- Device access via `uart: true` and a `device`-type `pps_device` option
+  instead of static `devices:`, so a Pi without a GPS hat still starts.
+- Add `hwtimestamp`, `lock_all` and `sched_priority` (default 1) options;
+  add `SYS_NICE`, `IPC_LOCK`, `SYS_RESOURCE` privileges and `realtime: true`.
+- Docs: deployment notes (wired Ethernet, CPU governor, stratum layout).
+
 ## 6.1.0-peering.2
 
 - Add per-peer/server `filter` option (`filter N`).

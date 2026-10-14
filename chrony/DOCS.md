@@ -145,6 +145,7 @@ complete key line) or `openssl rand -hex 32`.
 
 ### Option: `refclocks`
 
+Raw refclock passthrough; for GPS use the `gps` option instead.
 Each entry is appended as `refclock <entry>`, for example
 `SHM 0 refid NMEA noselect` or `PPS /dev/pps0 lock NMEA refid PPS`.
 chronyd exits if a PPS device does not exist, so only add PPS entries once
@@ -189,21 +190,104 @@ Proxmox host run `chronyc` directly:
 - `chronyc authdata`: the peer with mode `SK`, the right key id and length.
 - `chronyc tracking`: current offset and stratum.
 
-## GPS / PPS reference clock (later)
+## GPS / PPS reference clock
 
-Not enabled yet. To add an Adafruit GPS hat later:
+The image bundles gpsd 3.27. It only runs when `gps.enabled` is `true` and
+`gps.serial_device` is set; otherwise its service idles.
 
-1. Enable PPS on the Pi (HAOS `config.txt`:
-   `dtoverlay=pps-gpio,gpiopin=4`) and confirm `/dev/pps0` exists.
-1. Map the devices: uncomment `devices:` in `config.yaml` (`/dev/pps0` and
-   the GPS serial port) in a local copy of this add-on, or bump the add-on
-   with that change. Home Assistant refuses to start an add-on whose mapped
-   device is missing, which is why it is not mapped by default.
-1. A time source for the PPS pulse is needed: gpsd is not bundled. Either
-   run gpsd in another add-on writing to SHM (`refclocks: ["SHM 0 refid
-   NMEA noselect", "PPS /dev/pps0 lock NMEA refid PPS"]`), or lock PPS to
-   the network peers (`PPS /dev/pps0 refid PPS`, chrony completes the
-   seconds from the other sources).
+### Option: `gps`
+
+| Key | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `enabled` | bool | `false` | master switch |
+| `serial_device` | device (tty) | unset | GPS serial port, e.g. `/dev/ttyAMA0` or `/dev/serial0`; gpsd reads NMEA from it |
+| `pps_device` | device | unset | normally `/dev/pps0` |
+| `baud` | int | unset | gpsd autodetects when unset |
+| `nmea_source` | `shm` / `sock` | `shm` | how gpsd hands NMEA time to chrony |
+| `nmea_offset` / `nmea_delay` | float | `0.2` / `0.2` | tune `nmea_offset` against PPS once it is locked |
+| `pps_offset` | float | unset | cable/receiver correction in seconds |
+| `pps_prefer` | bool | `true` | add `prefer` to the PPS refclock |
+
+With a serial port and PPS this renders:
+
+```text
+refclock SHM 0:perm=0666 refid NMEA noselect offset 0.2 delay 0.2
+refclock PPS /dev/pps0 lock NMEA refid PPS prefer
+```
+
+The NMEA source is `noselect` and only numbers the seconds; PPS is the
+real (preferred) time source. `perm=0666` is needed because gpsd drops
+root after opening the port; the segment lives in the add-on's private
+IPC namespace. With `nmea_source: sock` chrony creates
+`/run/chrony.clk.<tty>.sock` and gpsd (started after chrony) writes to it.
+Without PPS the NMEA source is left selectable. With PPS but no serial port
+the PPS refclock has no `lock` and chrony numbers the seconds from the
+network sources.
+
+### Device access (why there is no `devices:` list)
+
+Home Assistant mounts the host `/dev` read-only into every add-on and
+grants access per device through cgroup rules. Older Supervisor versions
+refused to start an add-on whose static `devices:` entry was missing, so
+this add-on does not use one:
+
+- `uart: true` grants access to all serial ports (gpsd).
+- `gps.pps_device` uses the `device` option type, so the PPS device is
+  picked from a drop-down and granted only when it is set. Leave it empty
+  on a Pi without a GPS hat.
+- If `pps_device` is set but missing at startup (hat removed), the PPS line
+  is skipped with a warning instead of letting chronyd exit.
+
+### Enabling an Adafruit Ultimate GPS hat (later)
+
+1. Shut down, fit the hat and antenna.
+1. Edit `config.txt` on the HAOS boot partition: `dtoverlay=pps-gpio,gpiopin=4`,
+   and free the UART (`enable_uart=1`; on a Pi 3/4/5 also
+   `dtoverlay=disable-bt`, or use `/dev/ttyAMA0`/`serial0` as appropriate).
+   Reboot and confirm `/dev/pps0` and the serial port appear under
+   Settings > System > Hardware. Whether the `pps-gpio` module is present
+   in a given HAOS kernel has not been verified.
+1. In the add-on set `gps.enabled: true`, pick `serial_device` and
+   `pps_device`, restart, then watch `chronyc sources` until `PPS` shows
+   `*` and `NMEA` shows reach 377.
+1. Tune `nmea_offset` so the NMEA offset in `chronyc sourcestats` is
+   close to zero.
+
+## Performance options
+
+### Option: `hwtimestamp`
+
+Renders `hwtimestamp *` (NIC hardware timestamping on all interfaces that
+support it). It helps on a Raspberry Pi 5 wired Ethernet port, which has a
+PTP hardware clock; the Pi 4's Ethernet does not do hardware timestamping.
+Interfaces without support are ignored and chronyd starts normally.
+
+### Option: `lock_all`
+
+Renders `lock_all` (keep chronyd in RAM). Uses the `IPC_LOCK` and
+`SYS_RESOURCE` privileges granted to the add-on.
+
+### Option: `sched_priority`
+
+Renders `sched_priority N` (SCHED_FIFO real-time priority, 1-99, default
+1; 0 disables it). The add-on requests `SYS_NICE` and `realtime: true`
+(Supervisor adds the rtprio ulimit and an RT CPU budget). If the kernel
+refuses, chronyd keeps running at normal priority: with musl the failure
+is not even logged, so it is hard to see if it took effect.
+
+## Deployment notes
+
+- Use wired Ethernet, on the same switch as the Proxmox host it peers with.
+  Wi-Fi jitter wastes sub-second polling.
+- CPU frequency: HAOS uses the `ondemand` cpufreq governor and has no
+  setting to change it; add-ons cannot write to `/sys`. The only lever is
+  the Raspberry Pi firmware: `force_turbo=1` in `config.txt` pins the CPU
+  at its maximum clock (no overvolt, so it does not set the warranty bit),
+  at the cost of heat and power. This has not been tested here.
+- Intended layout per house: with a PPS hat each Pi becomes the house's
+  preferred local stratum 1 source; the Proxmox host peers with it on the
+  LAN and otherwise prefers public NTS servers; the cross-site link over
+  Tailscale is a backup peer only (higher poll, no `prefer`).
 
 ## Changelog & Releases
 
