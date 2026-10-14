@@ -7,108 +7,29 @@
 > repository in the add-on store, then see [chrony/DOCS.md](chrony/DOCS.md).
 > Original work is MIT licensed by Paul Sinclair; see [LICENSE.md](LICENSE.md).
 
-# Home Assistant Community App: chrony
+# Chrony (NTP peering)
 
-[![GitHub Release][releases-shield]][releases]
-![Project Stage][project-stage-shield]
-[![License][license-shield]](LICENSE.md)
+Fork of the Home Assistant Community App: chrony.
 
-[![Github Actions][github-actions-shield]][github-actions]
-![Project Maintenance][maintenance-shield]
-[![GitHub Activity][commits-shield]][commits]
+Enjoying this add-on? Buy them a coffee: Paul Sinclair, maintainer of the
+original Home Assistant chrony add-on.
 
 [![Buy me a coffee][buymeacoffee-shield]][buymeacoffee]
-
-chrony NTP Server.
 
 ## About
 
 An NTP server accessible by all hosts on the local network, useful for setting
 time on devices with controlled internet access (such as cameras).
-The app can also be used to set the system clock.
+The app can also be used to set the system clock. This fork adds symmetric
+peering, authentication keys, GPS/PPS and tuning options.
 
-[:books: Read the full app documentation][docs]
-
-## Support
-
-Got questions?
-
-You have several options to get them answered:
-
-- The [Home Assistant Community Apps Discord chat server][discord] for app
-  support and feature requests.
-- The [Home Assistant Discord chat server][discord-ha] for general Home
-  Assistant discussions and questions.
-- The Home Assistant [Community Forum][forum].
-- Join the [Reddit subreddit][reddit] in [/r/homeassistant][reddit]
-
-You could also [open an issue here][issue] GitHub.
-
-## Contributing
-
-This is an active open-source project. We are always open to people who want to
-use the code or contribute to it.
-
-We have set up a separate document containing our
-[contribution guidelines](.github/CONTRIBUTING.md).
-
-Thank you for being involved! :heart_eyes:
+[:books: Read the full add-on documentation](chrony/DOCS.md)
 
 ## Authors & contributors
 
-The original setup of this repository is by [Paul Sinclair][sinclairpaul].
-
-For a full list of all authors and contributors,
-check [the contributor's page][contributors].
-
-## We have got some Home Assistant apps for you
-
-Want some more functionality to your Home Assistant instance?
-
-We have created multiple apps for Home Assistant. For a full list, check out
-our [GitHub Repository][repository].
-
-## License
-
-MIT License
-
-Copyright (c) 2019-2026 Paul Sinclair
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+The original chrony add-on is by Paul Sinclair. This fork is maintained by
+Joe Boll. chrony itself is by Richard Curnow (original author) and
+Miroslav Lichvar (maintainer).
 
 [buymeacoffee-shield]: https://www.buymeacoffee.com/assets/img/guidelines/download-assets-sm-2.svg
 [buymeacoffee]: https://www.buymeacoffee.com/sinclairpaul
-[commits-shield]: https://img.shields.io/github/commit-activity/y/hassio-addons/app-chrony.svg
-[commits]: https://github.com/hassio-addons/app-chrony/commits/main
-[contributors]: https://github.com/hassio-addons/app-chrony/graphs/contributors
-[discord-ha]: https://discord.gg/c5DvZ4e
-[discord]: https://discord.me/hassioaddons
-[docs]: https://github.com/hassio-addons/app-chrony/blob/main/chrony/DOCS.md
-[forum]: https://community.home-assistant.io/t/community-hass-io-xxxxx/xxxxx
-[github-actions-shield]: https://github.com/hassio-addons/app-chrony/workflows/CI/badge.svg
-[github-actions]: https://github.com/hassio-addons/app-chrony/actions
-[issue]: https://github.com/hassio-addons/app-chrony/issues
-[license-shield]: https://img.shields.io/github/license/hassio-addons/app-chrony.svg
-[maintenance-shield]: https://img.shields.io/maintenance/yes/2026.svg
-[project-stage-shield]: https://img.shields.io/badge/project%20stage-production%20ready-brightgreen.svg
-[reddit]: https://reddit.com/r/homeassistant
-[releases-shield]: https://img.shields.io/github/release/hassio-addons/app-chrony.svg
-[releases]: https://github.com/hassio-addons/app-chrony/releases
-[repository]: https://github.com/hassio-addons/repository
-[sinclairpaul]: https://github.com/sinclairpaul

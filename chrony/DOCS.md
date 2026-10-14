@@ -289,40 +289,14 @@ is not even logged, so it is hard to see if it took effect.
   LAN and otherwise prefers public NTS servers; the cross-site link over
   Tailscale is a backup peer only (higher poll, no `prefer`).
 
-## Changelog & Releases
+## Changelog
 
-This repository keeps a change log using [GitHub's releases][releases]
-functionality.
-
-Releases are based on [Semantic Versioning][semver], and use the format
-of `MAJOR.MINOR.PATCH`. In a nutshell, the version will be incremented
-based on the following:
-
-- `MAJOR`: Incompatible or major changes.
-- `MINOR`: Backwards-compatible new features and enhancements.
-- `PATCH`: Backwards-compatible bugfixes and package updates.
-
-## Support
-
-Got questions?
-
-You have several options to get them answered:
-
-- The [Home Assistant Community Apps Discord chat server][discord] for app
-  support and feature requests.
-- The [Home Assistant Discord chat server][discord-ha] for general Home
-  Assistant discussions and questions.
-- The Home Assistant [Community Forum][forum].
-- Join the [Reddit subreddit][reddit] in [/r/homeassistant][reddit]
-
-You could also [open an issue here][issue] GitHub.
+See [CHANGELOG.md](CHANGELOG.md).
 
 ## Authors & contributors
 
-The original setup of this repository is by [Paul Sinclair][sinclairpaul].
-
-For a full list of all authors and contributors,
-check [the contributor's page][contributors].
+The original chrony add-on is by Paul Sinclair. This fork is maintained by
+Joe Boll.
 
 ## License
 
@@ -347,13 +321,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-[contributors]: https://github.com/hassio-addons/app-chrony/graphs/contributors
-[discord-ha]: https://discord.gg/c5DvZ4e
-[discord]: https://discord.me/hassioaddons
-[forum]: https://community.home-assistant.io/t/community-hass-io-xxxxx/xxxxx
-[issue]: https://github.com/hassio-addons/app-chrony/issues
-[reddit]: https://reddit.com/r/homeassistant
-[releases]: https://github.com/hassio-addons/app-chrony/releases
-[semver]: http://semver.org/spec/v2.0.0.htm
-[sinclairpaul]: https://github.com/sinclairpaul
