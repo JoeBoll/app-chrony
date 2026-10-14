@@ -1,0 +1,37 @@
+---
+name: Fork CI
+
+# yamllint disable-line rule:truthy
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add-on linter
+        uses: frenck/action-addon-linter@v2
+        with:
+          path: "./chrony"
+      - name: Render tests
+        run: |
+          sudo apt-get update && sudo apt-get install -y chrony jq shellcheck
+          shellcheck chrony/rootfs/usr/bin/chrony-render-config tests/render-test.sh
+          sudo tests/render-test.sh
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [linux/amd64, linux/arm64]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - name: Build
+        uses: docker/build-push-action@v6
+        with:
+          context: ./chrony
+          platforms: ${{ matrix.platform }}
+          push: false

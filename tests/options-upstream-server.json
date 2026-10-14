@@ -1,0 +1,1 @@
+{"set_system_clock":false,"mode":"server","ntp_server":["198.51.100.1","198.51.100.2"],"makestep_threshold":0.1,"makestep_limit":-1,"peers":[],"servers":[],"allow":[],"keys":[],"refclocks":[],"extra_config":""}

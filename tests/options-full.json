@@ -1,0 +1,5 @@
+{"set_system_clock":true,"mode":"pool","ntp_pool":"pool.ntp.org","ntp_server":[],"makestep_threshold":0.1,"makestep_limit":-1,"default_minpoll":4,"default_maxpoll":6,
+"peers":[{"address":"192.0.2.10","key":1,"xleave":true,"iburst":true}],
+"servers":[{"address":"time.example.org","iburst":true,"minpoll":3,"maxpoll":5,"key":2}],
+"allow":["192.0.2.0/24","2001:db8::/32"],"keys":[{"id":1,"type":"SHA256","secret":"HEX:00112233445566778899aabbccddeeff"},{"id":2,"type":"SHA1","secret":"supersecretpw"}],
+"refclocks":["SHM 0 refid NMEA noselect","PPS /dev/pps0 lock NMEA refid PPS"],"extra_config":"log measurements statistics tracking\nlogdir /tmp"}

@@ -1,32 +1,75 @@
 ---
-name: chrony
-version: dev
-slug: chrony
-description: A local NTP (Network Time Protocol) server for cameras etc.
-url: https://github.com/hassio-addons/app-chrony
+name: Chrony (NTP peering)
+version: 6.1.0-peering.1
+slug: chrony_peering
+description: >-
+  chrony NTP server/client with symmetric peering, authentication keys,
+  allow lists and refclock passthrough (fork of the community chrony app)
+url: https://github.com/JoeBoll/app-chrony
 startup: system
 arch:
   - aarch64
   - amd64
 hassio_api: true
 init: false
+host_network: true
 privileged:
   - SYS_TIME
-ports:
-  123/udp: 123
-ports_description:
-  123/udp: NTP; Network Time Protocol
+# Future GPS/PPS: HA refuses to start an add-on whose mapped device is
+# missing, so /dev/pps0 is NOT mapped by default. See DOCS.md
+# ("GPS / PPS reference clock") for how to enable it.
+# devices:
+#   - /dev/pps0
+#   - /dev/ttyAMA0
 options:
   set_system_clock: true
   mode: pool
   ntp_pool: pool.ntp.org
-  ntp_server:
-    - 54.39.13.155
-    - briareus.schulte.org
+  ntp_server: []
+  makestep_threshold: 0.1
+  makestep_limit: -1
+  default_minpoll: 4
+  default_maxpoll: 6
+  peers: []
+  servers: []
+  allow: []
+  keys: []
+  refclocks: []
+  extra_config: ""
 schema:
   log_level: list(trace|debug|info|notice|warning|error|fatal)?
   set_system_clock: bool
+  mode: list(pool|server|none)
   ntp_pool: str?
   ntp_server:
     - str?
-  mode: list(pool|server)
+  makestep_threshold: float
+  makestep_limit: int
+  default_minpoll: int(-7,24)?
+  default_maxpoll: int(-7,24)?
+  peers:
+    - address: str
+      key: int(1,)?
+      xleave: bool?
+      minpoll: int(-7,24)?
+      maxpoll: int(-7,24)?
+      iburst: bool?
+      prefer: bool?
+  servers:
+    - address: str
+      key: int(1,)?
+      xleave: bool?
+      minpoll: int(-7,24)?
+      maxpoll: int(-7,24)?
+      iburst: bool?
+      prefer: bool?
+  allow:
+    - str
+  keys:
+    - id: int(1,)
+      type: list(MD5|SHA1|SHA256|SHA384|SHA512|AES128|AES256)
+      secret: password
+  refclocks:
+    - str
+  local_stratum: int(1,15)?
+  extra_config: text?

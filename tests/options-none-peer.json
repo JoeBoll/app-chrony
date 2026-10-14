@@ -1,0 +1,1 @@
+{"set_system_clock":true,"mode":"none","makestep_threshold":0.1,"makestep_limit":-1,"default_minpoll":4,"default_maxpoll":6,"peers":[{"address":"198.51.100.10","key":5}],"servers":[],"allow":["198.51.100.0/24"],"keys":[],"refclocks":[],"local_stratum":10}
